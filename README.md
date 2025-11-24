@@ -1,63 +1,115 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# AppointmentManager Frontend
 
-# Getting Started
+This is the frontend application for **AppointmentManager**, a comprehensive appointment booking and management system built with [**React Native**](https://reactnative.dev).
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## About the Project
 
-## Step 1: Start the Metro Server
+AppointmentManager is a mobile application that connects users with vendors through a seamless appointment booking experience:
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+### Features
 
-To start Metro, run the following command from the _root_ of your React Native project:
+**For Users:**
+- Browse available vendors and their services
+- Book appointments based on vendor availability
+- View and manage upcoming appointments
+- Receive notifications for appointment confirmations and reminders
+
+**For Vendors:**
+- Create and manage your business profile page
+- Set up customizable time schedules and availability slots
+- Manage appointment bookings from customers
+- Track and organize appointments efficiently
+
+## Prerequisites
+
+Before you begin, make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions. You'll need:
+- Node.js (v14 or later)
+- npm or Yarn
+- For Android: Android Studio and Android SDK
+- For iOS: Xcode (macOS only)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd AppointmentManagerRN
+```
+
+2. Install dependencies:
+```bash
+npm install
+# OR
+yarn install
+```
+
+## Running the Application
+
+### Step 1: Start Metro Bundler
+
+First, start the Metro bundler from the root of the project:
 
 ```bash
-# using npm
 npm start
-
-# OR using Yarn
+# OR
 yarn start
 ```
 
-## Step 2: Start your Application
+To clear the cache (useful when encountering issues):
+```bash
+npm start -- --reset-cache
+```
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+### Step 2: Run on Your Device
 
-### For Android
+Keep Metro Bundler running in its terminal. Open a new terminal and run:
+
+#### For Android
 
 ```bash
-# using npm
 npm run android
-
-# OR using Yarn
+# OR
 yarn android
 ```
 
-### For iOS
+Make sure you have an Android emulator running or a physical device connected via USB with USB debugging enabled.
+
+#### For iOS
 
 ```bash
-# using npm
 npm run ios
-
-# OR using Yarn
+# OR
 yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+This requires macOS and Xcode. The app will launch in the iOS Simulator.
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+## Development
 
-## Step 3: Modifying your App
+### Viewing Changes
 
-Now that you have successfully run the app, let's modify it.
+After making code changes, you can reload the app:
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+- **Android**: Press <kbd>R</kbd> twice or open the Developer Menu (<kbd>Cmd ⌘</kbd> + <kbd>M</kbd> on macOS, <kbd>Ctrl</kbd> + <kbd>M</kbd> on Windows/Linux) and select "Reload"
+- **iOS**: Press <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in the iOS Simulator
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+### Quick Start Command
 
-## Congratulations! :tada:
+To see changes in this project, simply run:
 
-You've successfully run and modified your React Native App. :partying_face:
+```bash
+npm start
+```
+
+Then in a separate terminal:
+
+```bash
+# For Android
+npm run android
+
+# For iOS  
+npm run ios
+```
 
 ### Now what?
 
