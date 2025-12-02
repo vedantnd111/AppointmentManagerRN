@@ -2,7 +2,7 @@
  * Vendor Service - Handles all vendor-related API calls
  */
 
-const BASE_URL = 'http://localhost:8080/api/vendors';
+import { apiClient } from '../utils/apiClient';
 
 export interface AddressDTO {
   street: string;
@@ -65,32 +65,14 @@ export class VendorService {
    * Create a new vendor
    */
   static async createVendor(request: VendorProfileRequest): Promise<VendorProfileResponse> {
-    const response = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to create vendor: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.post<VendorProfileResponse>('/vendors', request);
   }
 
   /**
    * Get vendor by ID
    */
   static async getVendorById(id: number): Promise<VendorProfileResponse> {
-    const response = await fetch(`${BASE_URL}/${id}`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch vendor: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<VendorProfileResponse>(`/vendors/${id}`);
   }
 
   /**
@@ -98,46 +80,24 @@ export class VendorService {
    * @param categoryId - Optional filter by category ID
    */
   static async getAllVendors(categoryId?: number): Promise<VendorProfileResponse[]> {
-    const url = categoryId ? `${BASE_URL}?categoryId=${categoryId}` : BASE_URL;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch vendors: ${response.statusText}`);
-    }
-
-    return response.json();
+    const endpoint = categoryId
+      ? `/vendors?categoryId=${categoryId}`
+      : '/vendors';
+    return apiClient.get<VendorProfileResponse[]>(endpoint);
   }
 
   /**
    * Update a vendor
    */
   static async updateVendor(id: number, request: VendorProfileRequest): Promise<VendorProfileResponse> {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to update vendor: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.put<VendorProfileResponse>(`/vendors/${id}`, request);
   }
 
   /**
    * Delete a vendor
    */
   static async deleteVendor(id: number): Promise<void> {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to delete vendor: ${response.statusText}`);
-    }
+    return apiClient.delete<void>(`/vendors/${id}`);
   }
 
   /**
@@ -147,32 +107,17 @@ export class VendorService {
     vendorId: number,
     request: VendorAvailabilityRequest
   ): Promise<VendorAvailabilityResponse> {
-    const response = await fetch(`${BASE_URL}/${vendorId}/availability`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to add vendor availability: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.post<VendorAvailabilityResponse>(
+      `/vendors/${vendorId}/availability`,
+      request
+    );
   }
 
   /**
    * Get vendor availability
    */
   static async getVendorAvailability(vendorId: number): Promise<VendorAvailabilityResponse[]> {
-    const response = await fetch(`${BASE_URL}/${vendorId}/availability`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch vendor availability: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<VendorAvailabilityResponse[]>(`/vendors/${vendorId}/availability`);
   }
 
   /**
@@ -183,18 +128,9 @@ export class VendorService {
     availabilityId: number,
     request: VendorAvailabilityRequest
   ): Promise<VendorAvailabilityResponse> {
-    const response = await fetch(`${BASE_URL}/${vendorId}/availability/${availabilityId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to update vendor availability: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.put<VendorAvailabilityResponse>(
+      `/vendors/${vendorId}/availability/${availabilityId}`,
+      request
+    );
   }
 }

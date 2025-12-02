@@ -2,7 +2,7 @@
  * Appointment Service - Handles all appointment-related API calls
  */
 
-const BASE_URL = 'http://localhost:8080/api/appointments';
+import { apiClient } from '../utils/apiClient';
 
 export interface AppointmentRequest {
   userId: number;
@@ -29,58 +29,28 @@ export class AppointmentService {
    * Create a new appointment
    */
   static async createAppointment(request: AppointmentRequest): Promise<AppointmentResponse> {
-    const response = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to create appointment: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.post<AppointmentResponse>('/appointments', request);
   }
 
   /**
    * Get appointment by ID
    */
   static async getAppointmentById(id: number): Promise<AppointmentResponse> {
-    const response = await fetch(`${BASE_URL}/${id}`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch appointment: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<AppointmentResponse>(`/appointments/${id}`);
   }
 
   /**
    * Get all appointments for a specific user
    */
   static async getAppointmentsByUser(userId: number): Promise<AppointmentResponse[]> {
-    const response = await fetch(`${BASE_URL}/user/${userId}`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch user appointments: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<AppointmentResponse[]>(`/appointments/user/${userId}`);
   }
 
   /**
    * Get all appointments for a specific vendor
    */
   static async getAppointmentsByVendor(vendorId: number): Promise<AppointmentResponse[]> {
-    const response = await fetch(`${BASE_URL}/vendor/${vendorId}`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch vendor appointments: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<AppointmentResponse[]>(`/appointments/vendor/${vendorId}`);
   }
 
   /**
@@ -90,27 +60,13 @@ export class AppointmentService {
     id: number,
     status: 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED'
   ): Promise<AppointmentResponse> {
-    const response = await fetch(`${BASE_URL}/${id}/status?status=${status}`, {
-      method: 'PATCH',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to update appointment status: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.patch<AppointmentResponse>(`/appointments/${id}/status?status=${status}`);
   }
 
   /**
    * Cancel an appointment
    */
   static async cancelAppointment(id: number): Promise<void> {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to cancel appointment: ${response.statusText}`);
-    }
+    return apiClient.delete<void>(`/appointments/${id}`);
   }
 }

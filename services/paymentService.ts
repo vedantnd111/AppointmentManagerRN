@@ -2,7 +2,7 @@
  * Payment Service - Handles all payment-related API calls
  */
 
-const BASE_URL = 'http://localhost:8080/api/payments';
+import { apiClient } from '../utils/apiClient';
 
 export interface PaymentRequest {
   appointmentId: number;
@@ -28,45 +28,21 @@ export class PaymentService {
    * Create a new payment
    */
   static async createPayment(request: PaymentRequest): Promise<PaymentResponse> {
-    const response = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to create payment: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.post<PaymentResponse>('/payments', request);
   }
 
   /**
    * Get payment by ID
    */
   static async getPaymentById(id: number): Promise<PaymentResponse> {
-    const response = await fetch(`${BASE_URL}/${id}`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch payment: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<PaymentResponse>(`/payments/${id}`);
   }
 
   /**
    * Get payment by appointment ID
    */
   static async getPaymentByAppointmentId(appointmentId: number): Promise<PaymentResponse> {
-    const response = await fetch(`${BASE_URL}/appointment/${appointmentId}`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch payment for appointment: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<PaymentResponse>(`/payments/appointment/${appointmentId}`);
   }
 
   /**
@@ -76,14 +52,6 @@ export class PaymentService {
     id: number,
     status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED'
   ): Promise<PaymentResponse> {
-    const response = await fetch(`${BASE_URL}/${id}/status?status=${status}`, {
-      method: 'PATCH',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to update payment status: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.patch<PaymentResponse>(`/payments/${id}/status?status=${status}`);
   }
 }

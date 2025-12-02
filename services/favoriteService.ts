@@ -2,7 +2,7 @@
  * Favorite Service - Handles all favorite-related API calls
  */
 
-const BASE_URL = 'http://localhost:8080/api/favorites';
+import { apiClient } from '../utils/apiClient';
 
 export interface FavoriteRequest {
   userId: number;
@@ -21,44 +21,20 @@ export class FavoriteService {
    * Add a vendor to favorites
    */
   static async addFavorite(request: FavoriteRequest): Promise<FavoriteResponse> {
-    const response = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to add favorite: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.post<FavoriteResponse>('/favorites', request);
   }
 
   /**
    * Get all favorites for a specific user
    */
   static async getUserFavorites(userId: number): Promise<FavoriteResponse[]> {
-    const response = await fetch(`${BASE_URL}/user/${userId}`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch user favorites: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<FavoriteResponse[]>(`/favorites/user/${userId}`);
   }
 
   /**
    * Remove a favorite
    */
   static async removeFavorite(id: number): Promise<void> {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to remove favorite: ${response.statusText}`);
-    }
+    return apiClient.delete<void>(`/favorites/${id}`);
   }
 }

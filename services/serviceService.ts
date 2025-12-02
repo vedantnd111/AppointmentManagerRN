@@ -2,7 +2,7 @@
  * Service Service - Handles all service-related API calls
  */
 
-const BASE_URL = 'http://localhost:8080/api/services';
+import { apiClient } from '../utils/apiClient';
 
 export interface ServiceRequest {
   name: string;
@@ -32,32 +32,14 @@ export class ServiceService {
    * Create a new service
    */
   static async createService(request: ServiceRequest): Promise<ServiceResponse> {
-    const response = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to create service: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.post<ServiceResponse>('/services', request);
   }
 
   /**
    * Get service by ID
    */
   static async getServiceById(id: number): Promise<ServiceResponse> {
-    const response = await fetch(`${BASE_URL}/${id}`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch service: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<ServiceResponse>(`/services/${id}`);
   }
 
   /**
@@ -69,7 +51,6 @@ export class ServiceService {
     vendorId?: number,
     categoryId?: number
   ): Promise<ServiceResponse[]> {
-    let url = BASE_URL;
     const params = new URLSearchParams();
 
     if (vendorId) {
@@ -79,48 +60,24 @@ export class ServiceService {
       params.append('categoryId', categoryId.toString());
     }
 
-    if (params.toString()) {
-      url += `?${params.toString()}`;
-    }
+    const endpoint = params.toString()
+      ? `/services?${params.toString()}`
+      : '/services';
 
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch services: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.get<ServiceResponse[]>(endpoint);
   }
 
   /**
    * Update a service
    */
   static async updateService(id: number, request: ServiceRequest): Promise<ServiceResponse> {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to update service: ${response.statusText}`);
-    }
-
-    return response.json();
+    return apiClient.put<ServiceResponse>(`/services/${id}`, request);
   }
 
   /**
    * Delete a service
    */
   static async deleteService(id: number): Promise<void> {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to delete service: ${response.statusText}`);
-    }
+    return apiClient.delete<void>(`/services/${id}`);
   }
 }
