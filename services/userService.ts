@@ -1,119 +1,83 @@
 /**
  * User Service - Handles all user-related API calls
- * Currently using mock data, ready to integrate with real backend API
  */
 
-import { UserLocation, UserProfile, ApiResponse } from '../types/types';
+import { apiClient } from '../utils/apiClient';
 
-/**
- * Mock data for user location
- */
-const MOCK_USER_LOCATION: UserLocation = {
-    id: '1',
-    type: 'home',
-    label: 'Home',
-    address: '201, 2 Floor, Tower A3, Alpine Heights, Sector 22, Vashi',
-    isDefault: true,
-};
+export interface AddressDTO {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+    type: 'HOME' | 'WORK' | 'BUSINESS' | 'OTHER';
+}
 
-/**
- * Mock data for user profile
- */
-const MOCK_USER_PROFILE: UserProfile = {
-    id: 'user-123',
-    name: 'Vedant Deshpande',
-    email: 'vedant@example.com',
-    phone: '+91 98765 43210',
-    initial: 'V',
-};
+export interface UserProfileRequest {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    dateOfBirth?: string;
+    gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
+    profilePictureUrl?: string;
+    addresses?: AddressDTO[];
+}
 
-/**
- * Simulates network delay for realistic API behavior
- */
-const simulateNetworkDelay = (ms: number = 500): Promise<void> => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-};
+export interface UserProfileResponse {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    dateOfBirth?: string;
+    gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
+    profilePictureUrl?: string;
+    addresses?: AddressDTO[];
+    createdAt: string;
+    updatedAt: string;
+}
 
-/**
- * UserService class - Contains all user-related API methods
- */
 export class UserService {
-    private static baseUrl = 'https://api.appointmentmanager.com/v1'; // Placeholder for real API
-
     /**
-     * Fetches the user's default or selected location
-     * @returns Promise with user location data
+     * Create a new user
      */
-    static async getUserLocation(): Promise<ApiResponse<UserLocation>> {
-        try {
-            // TODO: Replace with actual API call
-            // const response = await fetch(`${this.baseUrl}/user/location`);
-            // const data = await response.json();
-
-            // Simulate network delay
-            await simulateNetworkDelay(300);
-
-            // Return mock data
-            return {
-                success: true,
-                data: MOCK_USER_LOCATION,
-                message: 'Location fetched successfully',
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Failed to fetch location',
-            };
-        }
+    static async createUser(request: UserProfileRequest): Promise<UserProfileResponse> {
+        return apiClient.post<UserProfileResponse>('/users/create', request);
     }
 
     /**
-     * Fetches the user's profile information
-     * @returns Promise with user profile data
+     * Get user by ID
      */
-    static async getUserProfile(): Promise<ApiResponse<UserProfile>> {
-        try {
-            // TODO: Replace with actual API call
-            // const response = await fetch(`${this.baseUrl}/user/profile`);
-            // const data = await response.json();
-
-            // Simulate network delay
-            await simulateNetworkDelay(400);
-
-            // Return mock data
-            return {
-                success: true,
-                data: MOCK_USER_PROFILE,
-                message: 'Profile fetched successfully',
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Failed to fetch profile',
-            };
-        }
+    static async getUserById(id: number): Promise<UserProfileResponse> {
+        return apiClient.get<UserProfileResponse>(`/users/${id}`);
     }
 
     /**
-     * Updates the user's default location
-     * @param locationId - ID of the location to set as default
-     * @returns Promise with updated location data
+     * Get all users
      */
-    static async updateDefaultLocation(locationId: string): Promise<ApiResponse<UserLocation>> {
-        try {
-            // TODO: Replace with actual API call
-            await simulateNetworkDelay(500);
+    static async getAllUsers(): Promise<UserProfileResponse[]> {
+        return apiClient.get<UserProfileResponse[]>('/users');
+    }
 
-            return {
-                success: true,
-                data: MOCK_USER_LOCATION,
-                message: 'Default location updated',
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Failed to update location',
-            };
-        }
+    /**
+     * Update user (full update)
+     */
+    static async updateUser(id: number, request: UserProfileRequest): Promise<UserProfileResponse> {
+        return apiClient.put<UserProfileResponse>(`/users/update/${id}`, request);
+    }
+
+    /**
+     * Partial update user
+     */
+    static async partialUpdateUser(id: number, request: Partial<UserProfileRequest>): Promise<UserProfileResponse> {
+        return apiClient.patch<UserProfileResponse>(`/users/update/${id}`, request);
+    }
+
+    /**
+     * Delete user
+     */
+    static async deleteUser(id: number): Promise<void> {
+        return apiClient.delete<void>(`/users/${id}`);
     }
 }
