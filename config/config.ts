@@ -1,23 +1,25 @@
 /**
  * Application Configuration
- * Centralized configuration for API and app settings
+ * Reads from environment variables defined in .env file
  */
+
+import { API_BASE_URL, API_TIMEOUT, NODE_ENV } from '@env';
 
 export const config = {
     /**
-     * API Base URL - Change this for different environments
+     * API Base URL - Loaded from .env
      */
-    API_BASE_URL: 'http://localhost:8080/api',
+    API_BASE_URL: API_BASE_URL,
 
     /**
      * Request timeout in milliseconds
      */
-    API_TIMEOUT: 30000,
+    API_TIMEOUT: parseInt(API_TIMEOUT, 10),
 
     /**
      * Environment flag
      */
-    isDevelopment: __DEV__,
+    isDevelopment: NODE_ENV,
 } as const;
 
 /**
